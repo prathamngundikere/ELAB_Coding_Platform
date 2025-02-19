@@ -1,0 +1,12 @@
+{
+	
+	"source":{
+		"62":"import java.io.*;\n\npublic class Main //Do not change the class name!!\n{ \n\tpublic static void main(String args[]){\n\n \t}\n }",
+		"50":"#include<stdio.h>\n\nint main(){ //Do not change the return type of main\n\n}",
+		"71":"",
+		"63":"",
+		"54":"#include <iostream>\n\nusing namespace std;\n\nint main() {\n\nreturn 0;\n}",
+		"51":""
+	},
+	"no_of_contest_images":12
+}

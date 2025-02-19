@@ -1,0 +1,163 @@
+link(rel='stylesheet', href='/assets/bootstrap/css/bootstrap.min.css')
+script(src='/assets/bootstrap/js/bootstrap.min.js')
+link(href="https://fonts.googleapis.com/css?family=Palanquin+Dark:400&display=swap" rel="stylesheet")
+title #{contest.name+"-"+"report"}
+style.
+  .lb_heading{
+    font-family: 'Palanquin Dark';
+    color:#666666;
+    cursor:default;
+    /*padding-left:10px;*/
+    letter-spacing:0.8px
+  }
+  html, body {
+      height: auto;
+      margin: 0;
+  }
+  .WRAPPER {
+      min-height: 100%;
+
+      /* Equal to height of footer */
+      /* But also accounting for potential margin-bottom of last child */
+      margin-bottom: -50px;
+  }
+  .FOOTER,
+  .push,.push1 {
+      height: 50px;
+  }
+-function two(x) {return ((x>9)?"":"0")+x}
+-
+  function convertMS( milliseconds ) {
+    var day, hour, minute, seconds;
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+    var time = two(day)+":"+two(hour)+":"+two(minute)+":"+two(seconds);
+    return time;
+  }
+//- Statistics
+.m-5
+  .row.w-100
+    -if(!query)
+      .col-6
+        h2.text-left.lb_heading(style="color:black") ELAB
+      .col-6
+        a.btn.btn-success(href="/contest/"+curl+"/reportDownload?print=all" target="_blank") Download Report
+        a.btn.btn-success.ml-4(href="/contest/"+curl+"/reportDownload?print=leaderboard" target="_blank") Download Leaderboard
+        a.btn.btn-success.ml-4(href="/contest/"+curl+"/reportDownload?print=signedup" target="_blank") Download Signed up list
+    -else
+      .col
+        h2.text-center.lb_heading(style="color:black") ELAB
+  br
+  .row.w-100
+    .col-8
+      h2.lb_heading.text-left Contest Name: #{contest.name}
+  .row.w-100
+    .col-lg-12
+      p.lb_heading.text-left(style="font-size:22px;font-weight:normal!important") Created By: #{contest.createdByName}
+  - let startTime = (contest.timings.starts).toString()
+  - let G = startTime.indexOf("G")
+  - startTime = startTime.slice(0,G-1)
+  - let endTime = (contest.timings.ends).toString()
+  - G = endTime.indexOf("G")
+  - endTime = endTime.slice(0,G-1)
+  .row.w-100
+    .col-lg-6
+      p.p-2(style="font-weight:bold;color:#666666;") #{startTime} - #{endTime}
+  -if(!(query && (query == "leaderboard" || query == "signedup")))
+    h1.lb_heading.text-center Student signed Up
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th Year
+          th No of Students signed up
+          th Total No. of submissions
+        tbody
+          tr
+            td 1
+            td=stats.signed_up[0]
+            td=stats.submissions[0]
+          tr
+            td 2
+            td=stats.signed_up[1]
+            td=stats.submissions[1]
+          tr
+            td 3
+            td=stats.signed_up[2]
+            td=stats.submissions[2]
+          tr
+            td 4
+            td=stats.signed_up[3]
+            td=stats.submissions[3]
+    br
+
+    h1.lb_heading.text-center Teacher signed up
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th Year
+          th No of Teachers signed up
+          th Total No. of submissions
+        tbody
+          tr
+            td -
+            td=stats.signed_up[4]
+            td=stats.submissions[4]
+
+    br
+    br
+    h1.lb_heading.text-center Question submission
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th Question Name
+          th Accepted
+          th Partially Accepted
+          th Wrong Answer
+      tbody
+        each i in questionNo
+          tr
+            td=i.name
+            td=i.Accepted
+            td=i.Partially_Accepted
+            td=i.Wrong_Answer
+    br
+    br
+  -if(query == "leaderboard" || query=="all" || !query)
+    h1.lb_heading.text-center Leaderboard
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th RANK
+          th USN/ID
+          th NAME
+          th POINTS
+          th TIME (DD:HH:MM:SS)
+      tbody
+        each i,j in contest.leaderboard
+          tr
+            td=(j+1)
+            td=i.usn
+            td=i.name
+            td=i.points
+            td=convertMS(i.timestamp)
+  -if(query == "signedup")
+    h1.lb_heading.text-center Signed up
+    table.table.table-striped.table-bordered
+      thead
+        tr
+          th No
+          th USN/ID
+          th NAME
+          th TIMESTAMP
+      tbody
+        each i,j in contest.signedUp
+          tr
+            td=(j+1)
+            td=i.usn
+            td=i.name
+            td=moment(i.time).format('LLL')

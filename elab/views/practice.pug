@@ -1,0 +1,81 @@
+extends navbar
+block append head   
+    - active.practice="active"
+    - navClass = "bg-fade trans";
+    - navStyle = "";
+    title Practice
+    link(rel='stylesheet' href='list_style/bootstrap/css/new.css')
+    link(rel="stylesheet", href="/fontawesome/all.min.css")
+    script(src="/fontawesome/all.min.js")
+    link(rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:300,400,700')
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/css/pikaday.min.css')
+    link(rel="stylesheet", href="/assets/css/n.css")
+    link(rel="stylesheet", href="/css/practcard.css")
+    script(src="/js/typewriter.js")
+    
+    style.
+        body{
+            background-color:#f5f5f0;
+        }
+        .pull-right{
+            float:right; 
+        }
+        .trans{
+        position:absolute;
+        right:60px;
+        left:60px;
+        padding-top:30px;
+        background:transparent;
+        background-color:transparent!important;
+        }
+        /*.editor-right{
+        color:#263238;
+        }*/
+        .editor-right:hover{
+            /*color:#1E88E5;*/
+            cursor:pointer;
+        }
+        
+block content
+    .WRAPPER 
+        section.module.parallax.parallax-1(data-type='background' data-speed='10')
+            .parallax-container
+                h2.typewrite(href='' data-period='2000' data-type='[ "PRACTICE" ]' style="font-family: 'ABeeZee';letter-spacing:3px;font-weight:bold")
+                    span.wrap
+        div#practice
+            main.page.projets-page
+                section.portfolio-block.project-no-images.pt-4
+                    //- .container1
+                    .container-fluid
+                        .row
+                            .col-10
+                        .row1.mt-4
+                            - let questions=q
+                            each i in questions
+                                .col-lg-3
+                                    .project-card-no-image.p-3.pl-4.pr-4
+                                        .row
+                                            .col-lg-12
+                                                //- style="font-family:Lato,sanf-serif"
+                                                h3.lb_heading(style="letter-spacing:0px")=i.name
+                                            .col-lg-12.h-50
+                                                label.fontStyle(style="font-size:15px") Difficulty: #{i.difficulty}
+                                            .col-lg-12
+                                                a.btn1.btn1-outline-primary.btn1-sm.pull-right.fontStyle(role='button' href='/practice/'+i.qid) SOLVE
+        -if(count>0)
+            ul.pagination.justify-content-center
+                li.page-item(class=(page==1?'disabled':''))
+                    a.page-link(href="?page="+(page-1)) Previous
+                -for(let i=1;i<=Math.ceil(count/12);i++)
+                    li.page-item(class=(page==i?'active':''))
+                        a.page-link(href="?page="+i)=i
+                li.page-item(class=(page==Math.ceil(count/12)?'disabled':''))
+                    a.page-link(href="?page="+(page+1) ) Next
+        
+        .push1
+        .push
+        //- footer.bg-dark(class="FOOTER")
+        //-     div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+    include footer
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.6.1/pikaday.min.js')
+        script(src='list_style/js/theme.js')

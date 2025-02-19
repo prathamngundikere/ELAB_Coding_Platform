@@ -1,0 +1,21 @@
+
+.container
+    p.fontStyle Total No. of submissions : #{totalNoOfSubs}
+
+.container
+    table.table.table-striped
+        thead
+            tr
+                th Question Name
+                th Accepted
+                th Pending
+                th Wrong Answer
+        tbody
+            each i in questionNo
+                tr
+                    td=i.name
+                    td=i.Accepted
+                    td=i.Pending
+                    td=i.Wrong_Answer
+
+

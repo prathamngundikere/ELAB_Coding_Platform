@@ -1,0 +1,105 @@
+include nav
+
+head
+    link(rel="stylesheet", href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css")
+    script(src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js")
+    script(src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js")
+    link(href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet")
+    link(rel="stylesheet", href="/css/lb_main.css")
+    script(src="/js/he.js")
+    style.
+        th{
+            font-family: OpenSans-Regular;
+            font-size: 16px;
+            color: #fff;
+            line-height: 1.2;
+            font-weight: unset;
+        }
+    title Submissions
+        
+        
+body
+    .WRAPPER
+        br
+        nav(aria-label='breadcrumb' style="color:black;width:56.5%;")
+            ol.mb-0.breadcrumb(style="padding-left:20px;background-color:white")
+                li.breadcrumb-item
+                    a(href='/assignment') Assignment
+                li.breadcrumb-item
+                    a(href='/assignment?a='+assignment.id) #{assignment.sem} Sem
+                li.breadcrumb-item.active(aria-current='page') Submissions
+        h1.text-center.m-3.lb_heading Submissions
+
+        .container-fluid
+            .row
+                .col-lg-12
+                    .lb
+                        table#submission.table.table-hover
+                            thead
+                                tr
+                                    th.column1 No.
+                                    th USN
+                                    th Name
+                                    th Question Name
+                                    th Language
+                                    th Source Code
+                                    th Time (DD:HH:MM:SS)
+                                    th Points
+                                    th Status
+                            tbody
+        .modal.fade#source(tabindex ="-1" role="dialog" )
+            .modal-dialog.modal-lg
+                .modal-content
+                    .modal-header
+                        h4.modal-title Code 
+                    .modal-body
+                        #sourceBody(style="font-family: 'Source Code Pro' ;white-space: pre-wrap;")
+                    .modal-footer
+                        button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+        .push1
+        .push
+    //- footer.bg-dark(class="FOOTER")
+    //-     div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+    include ../footer    
+    script.
+        $.get('/assignment/submissions/data/#{assignment.id}',function(data,status){
+                    const submissions = $('#submission').DataTable( {
+                        "data":data,
+                        "columns": [
+                            { "data": null },
+                            { "data": "usn" },
+                            { "data": "name" },
+                            { "data": "qname" },
+                            { "data": "lang" },
+                            { "data": "code" },
+                            { "data": "time" },
+                            { "data": "points" },
+                            { "data": "status" },
+                        ],
+                        "order": [[ 5, 'asc' ]],
+                        "columnDefs": [ {"searchable": false,"orderable": false,"targets": 0},
+                                        { "width": "1%", "targets": 0 },
+                                        {"searchable": false,"orderable": false,"targets": 5},
+                                        {"searchable": false,"targets": 4},
+                                        {"searchable": false,"targets": 3},
+                                        {"searchable": false,"targets": 6},
+                                        {"searchable": false,"targets": 7},
+                                        {"searchable": false,"targets": 8} ]
+                    } );
+                     submissions.on( 'order.dt search.dt', function () {
+                        submissions.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                            cell.innerHTML = i+1;
+                        } );
+                    } ).draw();
+                }).fail((err)=>{
+                    toastr.error(err.responseText);
+                });
+
+        
+        $("#source").on('show.bs.modal',function (e){
+            $("#sourceBody").empty();
+            $.get('/assignment/source/#{assignment.id}/'+$(e.relatedTarget).data('usn')+'/'+$(e.relatedTarget).data('qid'),function(data,status){
+                $("#sourceBody").html(he.escape(data));
+            });
+
+        });

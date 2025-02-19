@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Judge0 Services
+  judge0-server:
+    image: judge0/judge0:1.13.1-extra
+    volumes:
+      - ./judge0-config/judge0.conf:/judge0.conf:ro
+    ports:
+      - "3000:2358"
+    privileged: true
+    depends_on:
+      - judge0-db
+      - judge0-redis
+    restart: always
+
+  judge0-workers:
+    image: judge0/judge0:1.13.1-extra
+    command: ["./scripts/workers"]
+    volumes:
+      - ./judge0-config/judge0.conf:/judge0.conf:ro
+    privileged: true
+    depends_on:
+      - judge0-db
+      - judge0-redis
+    restart: always
+
+  judge0-db:
+    image: postgres:16.2
+    env_file: ./judge0-config/judge0.conf
+    volumes:
+      - judge0-db-data:/var/lib/postgresql/data/
+    restart: always
+
+  judge0-redis:
+    image: redis:7.2.4
+    command: [
+      "bash", "-c",
+      'docker-entrypoint.sh --appendonly no --requirepass "${REDIS_PASSWORD}"'
+    ]
+    env_file: ./judge0-config/judge0.conf
+    restart: always
+
+  # MongoDB Service
+  mongodb:
+    image: mongodb/mongodb-community-server:4.4-ubuntu2004
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb-data:/data/db
+    restart: always
+
+  # Node.js Application
+  elab-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      - RESET_ID=test@gmail.com
+      - RESET_PASS=12345678
+      - SESSION_SECRET=123
+      #- MONGODB_URI=mongodb://mongodb:27017/elab
+      #- JUDGE0_API_URL=http://judge0-server:2358
+    #depends_on:
+      #- mongodb
+      #- judge0-server
+    restart: always
+
+volumes:
+  judge0-db-data:
+  mongodb-data:

@@ -1,0 +1,142 @@
+doctype html
+include nav
+html(lang='en')
+
+  head
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(http-equiv='X-UA-Compatible', content='ie=edge')
+    link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css")
+    
+    script(src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js")
+    script(src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
+    title ELAB |CONTEST FORM
+    style.
+      * { 
+      box-sizing: border-box;
+      }
+      .contestform{
+      /*border: 2px solid black;*/
+      margin: 30px;
+      padding: 10px;
+      margin-top: 110px;
+      }
+      .mwidth{
+        width:400px;
+
+      }
+      .Date{
+        width:175px;
+
+      }
+      .at{
+        width:100px;
+      }
+      .Row{
+        margin-left:10px;    
+      }
+      .contestform{
+        width: 65%;
+        //- box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        text-align: left;
+        left: 10px;
+        //- padding: 10px;
+        margin: 10px;
+        position: relative;
+        //- display: -ms-flexbox;
+        display: flex;
+        -ms-flex-direction: column;
+        flex-direction: column;
+        min-width: 0;
+        word-wrap: break-word;
+        background-color: #fff;
+        background-clip: border-box;
+        border: 1px solid rgba(0,0,0,.125);
+        border-radius: .25rem;
+      }
+
+    script.
+      let u ="";
+      function submitForm(){
+      const con = $.post("", $("#con").serialize(), function(data,status) {
+              u = data.url;
+              $('#manageModal').modal('show');
+              })
+                  .fail(function(error){
+                      toastr.error(error.responseText);
+                  })}
+      
+
+  body
+    .WRAPPER
+      h2.lb_heading.m-3(style="margin-left:35px!important") Create Contest
+      .contestform.ml-4
+        div#errorForm
+        // The Modal
+        #manageModal.modal.fade(data-backdrop="static", data-keyboard="false")
+          .modal-dialog.modal-dialog-centered
+            .modal-content
+              // Modal Header
+              .modal-header
+                h4.modal-title Contest Created
+              // Modal body
+              .modal-body
+                | Click on Next to manage your contest
+              // Modal footer
+              .modal-footer
+                button.btn.btn-success(type='button' , onclick="location.href='./manage/'+u") Next
+
+    
+        div.pl-3.pt-3
+          form#con
+            label.fontStyle.font-weight-bold(for='Contest') Contest Name 
+            input.form-control.mwidth#Contest(type='text', name='name', placeholder='Contest', required='true')
+            br
+            br
+            label.fontStyle.font-weight-bold(for='descrip') Description
+            input.form-control.mwidth#descrip(type='text', name='description', placeholder='Description', required='true')
+            br
+            br
+            label.fontStyle.font-weight-bold(for='timings') Date
+            input#timings.form-control.mwidth(type='text' name='timings' )
+            
+            br
+            br
+            .row.Row
+              label.fontStyle.font-weight-bold For: &nbsp;
+              .col-1.custom-control.custom-checkbox
+                input(type='checkbox',class= "custom-control-input", name='year', id="1-year", value='1')
+                label.fontStyle(class="custom-control-label" for="1-year") 1st Year
+              .col-1.custom-control.custom-checkbox
+                input(type='checkbox', class= "custom-control-input",name='year',id="2-year" ,value='2')
+                label.fontStyle(class="custom-control-label" for="2-year") 2nd Year
+              .col-1.custom-control.custom-checkbox
+                input(type='checkbox', class= "custom-control-input",name='year',id="3-year", value='3')
+                label.fontStyle(class="custom-control-label" for="3-year") 3rd Year
+              .col-1.custom-control.custom-checkbox
+                input(type='checkbox', class= "custom-control-input",name='year',id="4-year", value='4')
+                label.fontStyle(class="custom-control-label" for="4-year") 4th Year
+              .col-1.custom-control.custom-checkbox
+                input(type='checkbox', class= "custom-control-input",id="custom", value='custom')
+                label.fontStyle(class="custom-control-label" for="custom") Custom
+            br 
+            
+            div.mb-2(style="float:right")
+              input.btn.btn-outline-primary.btn-sm(type='button', value='GET STARTED', onclick="submitForm()",style="margin-right:30px;")
+              a.btn.btn-outline-danger.btn-sm(type='button', href="/contest",style="margin-right:30px;") CANCEL
+      .push1
+      .push
+    //- footer.bg-dark(class="FOOTER")
+    //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020    
+    include ../footer
+        script.
+          $(function() {
+            $('#timings').daterangepicker({
+              timePicker: true,
+              startDate: moment().startOf('hour'),
+              endDate: moment().startOf('hour').add(32, 'hour'),
+              locale: {
+                format: 'YYYY/MM/DD hh:mm A'
+                } 
+              });
+            });

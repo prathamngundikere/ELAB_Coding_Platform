@@ -1,0 +1,180 @@
+extends layout
+
+block append code
+    - active.add="active"
+    - active.manage="active"
+    - menu.manage="menu-open"
+block append head
+    style(type="text/css").
+        .hide{
+            display:none;
+        }
+    
+        
+block content
+    form#add
+        .card.card-primary
+            .card-header 
+                h3.card-title Add an account
+            .card-body
+                .col-3(style="margin:auto;")
+                    .form-group
+                        select#type(name="type", data-target=".addForm").form-control.custom-select.type
+                            option(selected,disabled) Select Account Type
+                            option(value="student", data-show=".student") Student
+                            option(value="teacher", data-show=".teacher") Teacher
+
+                .row.addForm#addForm
+                    .col-md-4.student.hide#sf
+                        .form-group
+                            label(for="fname") First Name
+                            input#fname.form-control(type="text",name="fname")
+                        .form-group
+                            label(for="lname") Last Name
+                            input#lname.form-control(type="text",name="lname")
+                        .form-group
+                            label(for="usn") USN
+                            input#usn.form-control(type="text",name="usn")
+                        .form-group
+                            label(for="year") Year
+                            select#year(name="year").form-control.custom-select.type
+                                option(selected,disabled) Select Year
+                                option(value="1") 1
+                                option(value="2") 2
+                                option(value="3") 3
+                                option(value="4") 4
+
+                        .form-group
+                            label(for="email") Email
+                            input#email.form-control(type="email",name="email")
+                        .form-group
+                            label(for="password") Password
+                            input#password.form-control(type="password",name="password")
+                        .col-12
+                        input(type="button",onclick="submitForm()", value="Create New Account").btn.btn-success.float-right
+
+                            
+                    .col-md-4.teacher.hide#tf
+                        .form-group
+                            label(for="fname") First Name
+                            input#fname.form-control(type="text",name="fname")
+                        .form-group
+                            label(for="lname") Last Name
+                            input#lname.form-control(type="text",name="lname")
+                        .form-group
+                            label(for="staffid") Staff ID
+                            input#staffid.form-control(type="text",name="staff_id")
+                        .form-group
+                            label(for="email") Email
+                            input#email.form-control(type="email",name="email")
+                        .form-group
+                            label(for="password") Password
+                            input#password.form-control(type="password",name="password")
+                        .col-12
+                        input(type="button", onclick="submitForm()",value="Create New Account").btn.btn-success.float-right
+    form(enctype="multipart/form-data" ,method="POST",onsubmit="submitCSV()")#csv
+        .card.card-primary
+            .card-header
+                h3.card-title Add via CSV
+            .card-body
+                .col-3(style="margin:auto;")
+                    .form-group
+                        h6 Select account type
+                        select#type_csv(name="type_csv", required).form-control.custom-select
+                            option(value="student") Student
+                            option(value="teacher") Teacher
+                .row
+                    .col-md-4
+                        .form-group
+                            p Download CSV Template file
+                            a#download.btn.btn-info(href="/student.csv") Download
+                        br
+                        br
+                        .form-group
+                            input(type="file", name="csv" required)
+                        .form-group
+                            button#csv_process.btn.btn-success(type="submit", data-loading-text="<i class='fas fa-circle-notch fa-spin'></i> Processing") Upload
+
+    .modal.fade#error_csv(tabindex ="-1" role="dialog" )
+        .modal-dialog.modal-lg
+            .modal-content
+                .modal-header
+                    h4.modal-title Error
+                .modal-body
+                    #ebody
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+       
+    script(type='text/javascript').
+        $(document).on('change', '#type', function() {
+        let target = $(this).data('target');
+        let show = $("option:selected", this).data('show');
+        $(target).children().addClass('hide');
+        $(show).removeClass('hide');
+        let type=document.getElementById('type').value;
+        $("#add").trigger("reset");
+        document.getElementById('type').value=type;
+        
+        });
+        $(document).ready(function(){
+        $('.type').trigger('change');
+        
+        });
+
+        function submitForm(){
+
+            
+            if(document.getElementById('type').value === "student"){
+                //-$("#tf").remove();
+                $("#tf *").prop('disabled',true);}
+            else{
+                $("#sf *").prop('disabled',true);
+               }
+            const reg = $.post("/register", $("#add").serialize(), function(data,status) {
+
+            toastr.success(data);
+            window.location.href = '/admin/add'
+            })
+                .fail(function(error){
+                   
+                    $("#addForm *").prop('disabled',false);
+                    toastr.error(error.responseText);
+                })
+            
+        }
+
+        function submitCSV(){
+            $("#csv_process").prop('disabled',true).html("Processing");
+             $.ajax({
+                url: '/admin/add/',
+                type: 'post',
+                data: new FormData($('#csv')[0]),
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function( data, textStatus, jQxhr ){
+                    toastr.success(data);
+                    $("#csv_process").prop('disabled',false).html("Upload");
+                },
+                error: function(error){
+                    //toastr.error(error.responseText);
+                    $("#csv_process").prop('disabled',false).html("Upload");
+                    $("#ebody").html(error.responseText);
+                    $('#error_csv').modal('show');
+                    
+                }
+            });
+            return false;
+        }
+        $(document).ready(function(){
+            $("#type_csv").change(function (){
+                if($(this).val() == 'student'){
+                    $("#download").attr("href","/student.csv");
+                }else{
+                    $("#download").attr("href","/teacher.csv");
+                }
+            });
+        });
+        
+    
+                    

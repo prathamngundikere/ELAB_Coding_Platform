@@ -1,0 +1,94 @@
+link(rel='stylesheet' type='text/css' href='/css/lb_util.css')
+link(rel='stylesheet' type='text/css' href='/css/lb_main.css')
+link(rel="stylesheet", href="/fontawesome/all.min.css")
+script(src="/fontawesome/all.min.js")
+style.
+  .lb_heading{
+        /*font-family: 'Patua One';*/
+        font-family: 'Palanquin Dark';
+        color:#666666;
+        /*padding-left:10px;*/
+        letter-spacing:0.8px
+      }
+
+-function two(x) {return ((x>9)?"":"0")+x}
+-
+  function convertMS( milliseconds ) {
+    var day, hour, minute, seconds;
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+    var time = two(day)+":"+two(hour)+":"+two(minute)+":"+two(seconds);
+    return time;
+  }
+
+body
+  .row
+    .col-lg-9
+    .col-lg-3
+      a.btn.btn-info.ml-3( href="/contest/"+contest.url+"/reportDownload?print=leaderboard") Download Leaderboard
+  h1.text-center.mb-0.lb_heading Leaderboard
+  .lb
+    .limiter
+      .container-table100
+        .wrap-table100
+          .table100
+            table(class="lb_Table")
+              thead(class="lb_Thead")
+                tr.table100-head
+                  th.column1 
+                    i.fal.fa-flag-checkered 
+                    | &nbsp; RANK
+                  th.column2 
+                    i.fal.fa-id-card
+                    | &nbsp; USN/ID
+                  th.column3 
+                    i.fal.fa-user 
+                    | &nbsp; Name
+                  th.column4
+                    i.fal.fa-bullseye-arrow
+                    | &nbsp; POINTS
+                  th.column5 
+                    i.fal.fa-clock
+                    | &nbsp; TIME (DD:HH:MM:SS)
+                  // <th class="column6">Total</th>
+              tbody(class="lb_Tbody")
+                each i,j in contest.leaderboard
+                  tr
+                    td.column1
+                      if(j+1 == 1)
+                        i.fad.fa-trophy-alt.fa-2x(style="color:#FFDB19")
+                      else if(j+1 == 2)
+                        i.fad.fa-trophy-alt.fa-2x(style="color:#c6c6c6")
+                      else if(j+1 == 3)
+                        i.fad.fa-trophy-alt.fa-2x(style="color:#E67300")
+                      else
+                        div(style="padding-left:12px;font-weight:bold") #{j+1}
+                    td.column2 #{i.usn}
+                    td.column3 
+                      a(href="/viewProfile/"+i.usn+"") #{i.name}
+                    td.column4 #{i.points}
+                    td.column5 #{convertMS(i.timestamp)}
+
+  //- table.table.table-stripped
+  //-   thead.text-center
+  //-     tr
+  //-       th RANK
+  //-       th USN
+  //-       th NAME
+  //-       th POINTS
+  //-       th TIME (HH:MM:SS:MS)
+  //-   tbody
+  //-     each i,j in contest.leaderboard
+  //-       tr.text-center 
+  //-         td
+  //-           i.fad.fa-trophy-alt #{j+1}
+  //-         td 
+  //-           a(href="viewProfile/"+i.usn+"") #{i.usn}
+  //-         td=i.name
+  //-         td=i.points
+  //-         td #{time(i.timestamp)}

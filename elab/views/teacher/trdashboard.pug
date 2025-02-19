@@ -1,0 +1,125 @@
+include nav
+head
+  title Dashboard
+  link(rel='stylesheet' href='fontawesome/all.min.css')
+  script(src='/js/Chart.min.js')
+  script(src='/js/jquery.easing.js')
+  script(src='/assets/js/theme.js')
+  link(rel="stylesheet", href="/css/practcard.css")
+  link(rel='stylesheet' href='list_style/bootstrap/css/new.css')
+  
+body
+  br
+  br
+  .WRAPPER
+    #wrapper
+      #content-wrapper.d-flex.flex-column
+        #content
+          .container-fluid
+            .d-sm-flex.justify-content-between.align-items-center.mb-4
+              h3.text-dark.mb-0 Welcome #{session.fname}!
+            .row.mb-5
+              .col-lg-7.col-xl-8
+                .card.shadow.mb-4
+                  .card-header
+                    h6.text-primary.font-weight-bold.m-0 Contest Report
+                  .card-body
+                    .chart-area(style='height: 400px;')
+                      canvas#myChart
+              .col-lg-5.col-xl-4
+                .card.shadow.mb-4
+                  .card.text-white.bg-secondary.shadow
+                    .card-body(onclick="location.href='/contest/create'" style='cursor: pointer;')
+                      p.m-0 Create Contest
+                      p.text-white-50.small.m-0 Contest
+                .card.shadow.mb-4
+                  .card.text-white.bg-primary.shadow
+                    .card-body(onclick="location.href='/assignment/manage'" style='cursor: pointer;')
+                      p.m-0 Manage Assignments
+                      p.text-white-50.small.m-0 Assignments
+                .card.shadow.mb-4
+                  .card.text-white.bg-success.shadow
+                    .card-body(onclick="location.href='/practice?create'" style='cursor: pointer;')
+                      p.m-0 Create Question
+                      p.text-white-50.small.m-0 Practice 
+                .card.shadow.mb-4
+                  .card.text-white.bg-info.shadow
+                    .card-body(onclick="location.href='/contest/manage'" style='cursor: pointer;')
+                      p.m-0 Manage Contest
+                      p.text-white-50.small.m-0 Contest
+          -if(!contest3.length <=0)
+            .textcon(style='text-align: center; height: 50px; float: left;transform: rotate(90deg);margin-top: 60px;width: 150px;position: absolute;left: 0;')
+              hr
+              h2 Contest
+            .textcon(style='text-align: center; height: 50px; float: right;margin-top: 90px;width: 150px;cursor: pointer;' onclick="location.href='/contest'")
+              //- h2 Contest
+              i.fas.fa-arrow-circle-right.fa-3x
+            .container
+              div
+                
+                .row
+                  each i in contest3
+                    .col-4
+                      .card(style="height:350px;")
+                        img.card-img-top(src=i.image alt=i.name style='height:180px;object-fit:cover;')
+                        .card-body
+                          h3.card-title=i.name
+                          p=i.description.substr(0,90)+(i.description.length>90?"...":"")
+                            a.btn.btn-primary.btn-block(type='button' style='margin-left: 190px;width: 90px;height: 40px;margin-top:25px;postion:absolute;' href="/contest/"+i.url) View
+             
+          br
+          br
+          .textcon(style='text-align: center; height: 50px; float: left;transform: rotate(90deg);margin-top: 30px;width: 150px;position: absolute;left: 0;')
+            hr
+            h2 Practice
+          .textcon(style='text-align: center; height: 50px; float: right;margin-top: 30px;width: 150px;cursor: pointer;' onclick="location.href='/practice'")
+            //- a(href='/practice''/practice')  
+            i.fas.fa-arrow-circle-right.fa-3x
+          .container
+            div
+              .row
+                each i in practice
+                  .col-4
+                    .project-card-no-image
+                        h3(style="font-family:Lato,sanf-serif") #{i.name}
+                            br
+                            a.btn1.btn1-outline-primary.btn1-sm.pull-right(role='button' href='/practice/'+i.qid) VIEW
+          
+    .push1
+    .push          
+  //- footer.bg-dark(class="FOOTER")
+  //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+  include ../footer
+script.
+  const ctx = document.getElementById('myChart').getContext('2d');
+  let chart = new Chart(ctx, {
+  // The type of chart we want to create
+  type: 'bar',
+  // The data for our dataset
+  data: {
+  labels: !{JSON.stringify(labels)},
+  datasets: [{
+  label: 'Signed Up',
+  backgroundColor: 'rgb(0, 99, 132)',
+  // borderColor: 'rgb(0, 99, 132)',
+  data: [#{signedup}]
+  },{
+  label: 'Submission',
+  backgroundColor: 'rgb(200, 0, 0)',
+  // borderColor: 'rgb(0, 99, 132)',
+  data: [#{submissions}]
+  }]
+  },
+  // Configuration options go here
+  options: {
+  tooltips:{
+  mode:'index',
+  },
+  scales:{
+    yAxes:[{
+      ticks:{beginAtZero:true}
+    }]
+  }
+  }
+  });
+

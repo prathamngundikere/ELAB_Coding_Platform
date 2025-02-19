@@ -1,0 +1,252 @@
+head
+    style.
+      .btn-label {
+          position: relative;
+          left: -12px;
+          display: inline-block;
+          padding: 6px 12px;
+          background: rgba(0,0,0,0.15);
+          border-radius: 3px 0 0 3px;
+      }
+      .btn-labeled {
+          padding-top: 0;
+          padding-bottom: 0;
+          float: right;
+      }
+      .btn { 
+          margin-bottom:10px;
+          margin-right:5px;
+      } 
+
+
+
+body
+    .modal.fade#custom(tabindex ="-1" role="dialog" )
+        .modal-dialog.modal-xl
+            .modal-content
+                .modal-header
+                    h4.modal-title Add student 
+                .modal-body
+                    .container
+                        .row.justify-content-md-center
+                            .col.col-md-2
+                                select#year.custom-select
+                                    option(selected,disabled,value=0) Select Year
+                                    each i,j in y
+                                        if(!i && j!=0)
+                                            option(value=j)=j
+                    br
+                    
+                    table.table.table-hover#studentTable
+                        thead
+                            tr
+                                th Select
+                                th Usn
+                                th Name
+                    
+                .modal-footer
+                    button.btn.btn-success(type='button' onclick="customInsert()") SAVE
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+    .modal.fade#customTeacher(tabindex ="-1" role="dialog" )
+        .modal-dialog.modal-xl
+            .modal-content
+                .modal-header
+                    h4.modal-title Add Teacher to contest
+                .modal-body
+                    table#teacherTable.table.table-hover(style="width:100%")
+                        thead
+                            tr
+                                th Select
+                                th STAFF ID
+                                th Name
+                    
+                .modal-footer
+                    button.btn.btn-success(type='button' onclick="customInsertTeacher()") SAVE
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+    
+    | Grant access to participate in contest for individual Students/Teachers
+    
+    a.btn.btn-labeled.btn-success(href='' role='button'  data-toggle="modal" data-target="#custom")
+        span.btn-label
+            i.fas.fa-user-plus
+        | Add Custom Students
+    a.btn.btn-labeled.btn-success(href='' role='button'  data-toggle="modal" data-target="#customTeacher")
+        span.btn-label
+            i.fas.fa-user-plus
+        | Add Custom Teachers
+    br
+    | Note : Use groups if the list is large. 
+    br
+    br
+    #accordionExample.accordion
+        .card
+            #headingOne.card-header
+                h2.mb-0
+                    button.btn.btn-link.collapsed(type='button' data-toggle='collapse' data-target='#collapseOne' aria-expanded='false' aria-controls='collapseOne')
+                        | View selected students
+            #collapseOne.collapse(aria-labelledby='headingOne' data-parent='#accordionExample')
+                .card-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th #
+                                th Usn
+                                th Name
+                                th Year
+                        tbody#selectedStudents
+
+        .card
+            #headingTwo.card-header
+                h2.mb-0
+                    button.btn.btn-link.collapsed(type='button' data-toggle='collapse' data-target='#collapseTwo' aria-expanded='false' aria-controls='collapseTwo')
+                        | View selected teachers
+            #collapseTwo.collapse(aria-labelledby='headingTwo' data-parent='#accordionExample')
+                .card-body
+                    table.table.table-hover
+                        thead
+                            tr
+                                th #
+                                th STAFF ID
+                                th Name
+                        tbody#selectedTeachers
+
+
+
+    
+    
+    script.
+        let selected = !{JSON.stringify(contest.custom_usn)}
+        let selectedTeacher = !{JSON.stringify(contest.custom_staff_id)}
+        $('#year').change(function (){
+            $("#studentTable").DataTable().destroy();
+            $.get('/contest/students/'+$("#year").val(),{id:$('#contestid').val()},function(data,status){
+                const students = $('#studentTable').DataTable( {
+                    "data":data,
+                    "columns": [
+                        { "data": "select" },
+                        { "data": "usn" },
+                        { "data": "name" },
+                    ],
+                    "order": [[ 1, 'asc' ]],
+                    "columnDefs": [ {"searchable": false,"orderable": false,"targets": 0} ],
+                    "drawCallback": function(settings, json) {
+                        $.each(selected, function(i, val){
+                            $("input[value='" + val + "']").prop('checked', true);
+                        });
+                        $("input[name='studentListCustom']").change(function() {
+                            if(this.checked) {
+                                selected.push(this.value);
+                            }
+                            else{
+                                const index=selected.findIndex(i =>{return i == this.value});
+                                selected.splice(index,1);
+                            }
+                        });
+                    }
+                } );
+            }).fail((err)=>{
+                toastr.error(err.responseText);
+            });
+         });
+
+        function customInsert(){
+        //- let selected =[];
+        //- $("input[name='studentListCustom']:checked").each(function () {
+        //-     selected.push(this.value);
+        //- });
+        $.ajax({
+            type: "POST",
+            url: "/contest/students/"+$('#contestid').val(),
+            data:{studentListCustom:selected},
+            success: function (data,status, jqXHR) {
+               toastr.success(data);  
+                selectedStudentsData();
+            },
+            error: function (e) {
+                toastr.error(e.responseText);
+    
+            }
+        
+            });
+    
+         }
+
+         function customInsertTeacher(){
+        let selected =[];
+        $("input[name='teacherListCustom']:checked").each(function () {
+            selected.push(this.value);
+        });
+        $.ajax({
+            type: "POST",
+            url: "/contest/teachers/"+$('#contestid').val(),
+            data:{teacherListCustom:selectedTeacher},
+            success: function (data,status, jqXHR) {
+               toastr.success(data);  
+                selectedTeachersData();
+            },
+            error: function (e) {
+                toastr.error(e.responseText);
+    
+            }
+        
+            });
+    
+         }
+        
+        function selectedStudentsData(){$("#selectedStudents").empty();
+           $.get('/contest/students/id/'+$('#contestid').val(),function (data,status){
+               data.forEach((item,index)=>{
+                   $("#selectedStudents").append('<tr><td>'+(index+1)+'</td><td>'+item.usn+'</td><td>'+item.fname+" "+item.lname+'</td><td>'+item.year+'</td></tr>');
+               })
+               
+           }).fail((err)=>{
+                   toastr.error(err.responseText);
+               });
+        }
+
+        $("#collapseOne").on('show.bs.collapse',selectedStudentsData);
+
+        function selectedTeachersData(){$("#selectedTeachers").empty();
+           $.get('/contest/teachers/id/'+$('#contestid').val(),function (data,status){
+               data.forEach((item,index)=>{
+                   $("#selectedTeachers").append('<tr><td>'+(index+1)+'</td><td>'+item.staff_id+'</td><td>'+item.fname+" "+item.lname+'</td></tr>');
+               })
+               
+           }).fail((err)=>{
+                   toastr.error(err.responseText);
+               });
+        }
+
+        $("#collapseTwo").on('show.bs.collapse',selectedTeachersData);
+
+        $("#customTeacher").on('show.bs.modal',function (e){
+            $("#teacherTable").DataTable().destroy();
+            $.get('/contest/teachers',{id:$('#contestid').val()},function(data,status){
+                const teachers = $('#teacherTable').DataTable( {
+                    "data":data,
+                    "columns": [
+                        { "data": "select" },
+                        { "data": "staff_id" },
+                        { "data": "name" },
+                    ],
+                    "order": [[ 1, 'asc' ]],
+                    "columnDefs": [ {"searchable": false,"orderable": false,"targets": 0} ],
+                    "drawCallback": function(settings, json) {
+                        $.each(selectedTeacher, function(i, val){
+                            $("input[value='" + val + "']").prop('checked', true);
+                        });
+                        $("input[name='teacherListCustom']").change(function() {
+                            if(this.checked) {
+                                selectedTeacher.push(this.value);
+                            }
+                            else{
+                                const index=selectedTeacher.findIndex(i =>{return i == this.value});
+                                selectedTeacher.splice(index,1);
+                            }
+                        });
+                    }
+                } );
+            }).fail((err)=>{
+                toastr.error(err.responseText);
+            });
+        });

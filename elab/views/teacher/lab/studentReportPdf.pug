@@ -1,0 +1,75 @@
+html
+
+  head
+    link(rel='stylesheet', href='/assets/bootstrap/css/bootstrap.min.css')
+    script(src='/assets/bootstrap/js/bootstrap.min.js')
+    script(src="/assets/js/jquery.min.js")
+    link(href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet")
+    script(src="/js/he.js")
+    link(href="https://fonts.googleapis.com/css?family=Palanquin+Dark:400&display=swap" rel="stylesheet")
+    style.
+      .lb_heading{
+        font-family: 'Palanquin Dark';
+        color:#666666;
+        cursor:default;
+        /*padding-left:10px;*/
+        letter-spacing:0.8px
+      }
+      html, body {
+          height: auto;
+          margin: 0;
+      }
+      .WRAPPER {
+          min-height: 100%;
+
+          /* Equal to height of footer */
+          /* But also accounting for potential margin-bottom of last child */
+          margin-bottom: -50px;
+      }
+      .FOOTER,
+      .push,.push1 {
+          height: 50px;
+      }
+
+  body
+    br
+    h2.text-center.lb_heading(style="color:black") ELAB
+    .m-5
+      //- .row.w-100
+      //-   .col-lg-2
+      //-     h2.text-left.lb_heading(style="color:black") ELAB
+      //-   .col-lg-4
+        
+      .row.w-100
+        .col.mx-auto
+          h2.lb_heading.text-left(style="padding-left:0px;") Lab Name: #{lab.name}
+          p(style="font-weight:bold;color:#666666;margin:0px;padding-bottom:0px!important;padding-left:2px!important;") Lab Teacher : #{lab.createdByName}
+      
+      .row.w-100.mt-3
+        .col-lg.mx-auto
+          p.p-2(style="font-weight:bold;color:#666666;margin:0px;padding-bottom:0px!important;padding-left:2px!important;") Name : #{student.fname + " " + student.lname}
+          p.p-2(style="font-weight:bold;color:#666666;margin:0px;padding-bottom:0px!important;padding-left:2px!important;") USN : #{student.usn} 
+          p.p-2(style="font-weight:bold;color:#666666;margin:0px;padding-bottom:0px!important;padding-left:2px!important;") Year : #{student.year} 
+
+      h1.lb_heading.text-center.pb-4 Questions Answered
+      .row.w-100
+        .col-10.mx-auto
+          #sourceBody
+
+
+
+    script.
+      $.get('/lab/!{lab.url}/studentReport/#{student.usn}',function(data,status){
+        $("#sourceBody").empty();
+        $.each(data,function (index,val){
+            let html = (index+1)+")<br>";
+            html += "<div class='row'><div class='col-8'><p><strong>Question Name : "+val.name +"</strong></p></div>";
+            html += "<div class='col-4'><p class='float-right'>Status : "+val.status+"</p></div></div>";
+            html += "<div class='row'><div class='col-8'><p>Language : "+val.language+"</p></div>";
+            html += "<div class='col'> <p class='float-right'>Time :  "+val.time+"</p></div></div>"
+            html += `<div style='font-family: "Source Code Pro" ;white-space: pre-wrap;background-color: #cfd8dc ; padding:7px;border-radius:5px;'>`+he.escape(val.sourceCode)+"</div>"
+            html +="<br>"
+            $("#sourceBody").append(html);
+        });
+        
+      });

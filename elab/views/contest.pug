@@ -1,0 +1,172 @@
+extends navbar
+
+
+block append head
+  - navClass = "bg-fade trans";
+  - navStyle = "";
+  title Contest
+  link(rel="stylesheet", href="/css/contest_card.css")
+  link(rel="stylesheet", href="/assets/css/n.css")
+  link(rel='stylesheet' type='text/css' href='/card.css')
+  script(src="/js/contest_card.js")
+  script(src="/js/typewriter.js")
+  script.
+    $(document).ready(function () {
+      const list=window.location.href.split("=");
+      if(list.includes("past") || list.includes("past&page")){
+        $('.navbar1 a.active').removeClass('active');
+
+        $("#past").addClass('active');
+        //- $parent.addClass('active');
+        //e.preventDefault();
+      }
+    });
+  style.
+    .trans{
+    position:absolute;
+    right:60px;
+    left:60px;
+    padding-top:30px;
+    background:transparent;
+    background-color:transparent!important;
+    }
+    body{
+      background-color:#f5f5f0;
+    }
+    .flex-container {
+    display: flex;
+    flex-flow: row wrap;
+    align-content:flex-start;
+    }
+    /*body {
+    padding: 0;
+    margin: 0;
+    
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #DDD;
+    }*/
+
+    .navbar1 {
+      margin-left:30px;
+    }
+
+    .nav-link1 {
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+      text-decoration: none;
+      /*color: #031D44;*/
+      color:#37474F;
+      padding: 20px 0px;
+      padding-bottom: 15px;
+      margin: 0px 20px;
+      display: inline-block;
+      position: relative;
+      opacity: 0.75;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link1:hover {
+      opacity: 1;
+      text-decoration:none;
+      color: black;
+    }
+
+    .nav-link1::before {
+      transition: 300ms;
+      height: 3px;
+      content: "";
+      position: absolute;
+      background-color: #FF4F87;
+    }
+
+    .nav-link-ltr1::before {
+      width: 0%;
+      bottom: 10px;
+    }
+
+    .nav-link-ltr1:hover::before {
+      width: 100%;
+    }
+    .nav-link-ltr1.active::before {
+      transition:none;
+      width: 100%;
+    }
+
+    .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #FF4F87;
+        border-color: #FF4F87;
+    }
+
+    .nav-link1.active{
+      color:black;
+    }
+
+  - active.contest="active"
+  
+block content
+  .WRAPPER
+    section.module.parallax.parallax-1(data-type='background' data-speed='10')
+      .parallax-container
+        h2.typewrite(href='' data-period='2000' data-type='[ "CONTESTS" ]' style="font-family: 'ABeeZee';letter-spacing:3px;font-weight:bold")
+          span.wrap
+    
+    .navbar1
+      a.nav-link1.nav-link-ltr1.active(href='/contest' ) Contest
+      a.nav-link1.nav-link-ltr1(href='?l=past')#past Past
+
+
+    -const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    -function nth(n){return n+([,'st','nd','rd'][n%100>>3^1&&n%10]||'th')}
+    .row(style="width:100%;margin:0px;")
+      each i in contest
+        .ft-contest 
+          .ft-contest__thumb
+            //-span(id="close-modal")
+                i.ion.ion-md-close
+            //-h3 Today's Featured contest
+            img(src=i.image, alt=i.name)
+          .ft-contest__content
+            header.content__header
+              .row-wrapper
+                  h2(class="contest-title") #{ i.name}
+                  .user-rating
+              ul.contest-details
+                  li.contest-details-item
+                      i.ion.ion-ios-clock-outline
+                      span.value=Math.round(Math.abs(i.timings.ends - i.timings.starts) / 36e5)
+                      span.title Hours
+                  li.contest-details-item
+                      i.ion.ion-ios-book-outline
+                      span.value #{i.questions.length}
+                      span.title Questions
+                  li.contest-details-item
+                      i.ion.ion-ios-person-outline
+                      span.value=nth(i.timings.starts.getDate())
+                      span.title=month[i.timings.starts.getMonth()]
+            p.description=i.description.substr(0,90)+(i.description.length>90?"...":"")
+            footer.content__footer
+                a(href="/contest/"+i.url) View Contest
+    
+    -if(msg)
+      p.text-center=msg
+
+    -if(count>0)
+      ul.pagination.justify-content-center
+        li.page-item(class=(page==1?'disabled':''))
+            a.page-link(href='?l='+type+"&page="+(page-1)) Previous
+        -for(let i=1;i<=Math.ceil(count/12);i++)
+          li.page-item(class=(page==i?'active':''))
+            a.page-link(href='?l='+type+"&page="+i)=i
+        li.page-item(class=(page==Math.ceil(count/12)?'disabled':''))
+            a.page-link(href='?l='+type+"&page="+(page+1) ) Next
+
+      
+
+    .push1
+    .push
+  //- footer.bg-dark(class="FOOTER")
+  //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+  include footer

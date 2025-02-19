@@ -1,0 +1,149 @@
+doctype html
+html(lang='en')
+  head
+    title ELAB Login
+    meta(charset='UTF-8')
+    meta(name='viewport', content='width=1024')
+    link(rel='stylesheet', href='/assets/bootstrap/css/bootstrap.min.css')
+    link(rel="shortcut icon", href="/images/icons/code.png", type="image/x-icon")
+    link(rel='stylesheet', type='text/css', href='/vendor/bootstrap/css/bootstrap.min.css')
+    link(rel="stylesheet", href="fontawesome/all.min.css")
+    
+    //- link(rel='stylesheet', type='text/css', href='/fonts/Linearicons-Free-v1.0.0/icon-font.min.css')
+    //- link(rel='stylesheet', type='text/css', href='/vendor/animate/animate.css')
+    //- link(rel='stylesheet', type='text/css', href='/vendor/css-hamburgers/hamburgers.min.css')
+    //- link(rel='stylesheet', type='text/css', href='/vendor/select2/select2.min.css')
+    link(rel='stylesheet', type='text/css', href='/css/util.css')
+    link(rel='stylesheet', type='text/css', href='/css/main.css')
+    
+    
+    link(rel="stylesheet", href="/css/toastr.min.css")
+  style.
+    .carousel-inner img {
+    width: 100%;
+    height: 100%;
+    }
+    .carousel-caption{
+      left:0;
+      bottom:0;
+    }
+    /* For Footer*/
+
+      html, body {
+        height: 100%;
+        margin: 0;
+      }
+      .WRAPPER {
+        min-height: 100%;
+
+        /* Equal to height of footer */
+        /* But also accounting for potential margin-bottom of last child */
+        margin-bottom: -50px;
+      }
+      .FOOTER,
+      .push {
+        height: 80px!important;
+      }
+      .push1{
+        height: 50px!important;
+      }
+
+
+
+    /* End for Footer*/
+    
+  body
+    .limiter
+      .container-login100
+        .pi(style="posititon;relative;height:528px;width:535px;color:orange;margin-left:-50px;margin-top:-3px; ")
+          #demo.carousel.slide(data-ride='carousel' style='height:550px;' data-interval="2000")
+            ul.carousel-indicators
+              li.active(data-target='#demo' data-slide-to='0')
+              li(data-target='#demo' data-slide-to='1')
+              li(data-target='#demo' data-slide-to='2')
+            .carousel-inner
+              .carousel-item.active
+                img(src='/images/slide1.jpg'  width='1100' height='500')
+                .carousel-caption(style="background-color: #0c2970; width: 100%;height:70px;")
+                  h3 Practice
+                  p 
+              .carousel-item
+                img(src='/images/slider6.jpg'  width='1100' height='500')
+                .carousel-caption(style="background-color: #c6a4eb; width: 100%;margin-left:0;height:70px; margin-top:50px;")
+                  h3 Compete
+                  p 
+              .carousel-item
+                img(src='/images/slider8.jpg'  width='1100' height='500')
+                .carousel-caption(style="background-color: #3a0da3; width: 100%;margin-left:0;height:70px;")
+                  h3 Code
+            a.carousel-control-prev(href='#demo' data-slide='prev' style="opacity:0")
+              span.carousel-control-prev-icon
+            a.carousel-control-next(href='#demo' data-slide='next' style="opacity:0")
+              span.carousel-control-next-icon
+
+        .wrap-login100.p-l-50.p-r-50.p-t-77.p-b-30(style= "position:relative;height:530px;")
+          form.login100-form.validate-form#login(onsubmit="return login()")
+            //- span.login100-form-title.p-b-10(style='margin-top:-40px;')
+            //-   | ELAB
+            span.login100-form-title.p-b-25(style='font-size:150;')
+              |  ELAB login
+            .wrap-input100.m-b-16(data-validate='Valid email or usn is required: ex@abc.xyz')
+              input.input100(type='text', name='id', placeholder='USN or Email')
+              span.focus-input100
+              span.symbol-input100
+                span.fa.fa-envelope
+            .wrap-input100.validate-input.m-b-16(data-validate='Password is required')
+              input.input100(type='password', name='password', placeholder='Password')
+              span.focus-input100
+              span.symbol-input100
+                
+                span.fa.fa-lock
+            //- input.form-radio(type='radio', name='type', value='student',checked="checked")
+            //- | Student
+            //- .row#row
+            //-   .col-6  
+            //-     .custom-control.custom-radio
+            //-       input#student.custom-control-input(type='radio', name='type', value='student', checked="checked")
+            //-       label.custom-control-label(for='student') Student
+            //-   .col-6
+            //-     .custom-control.custom-radio
+            //-       input#teacher.custom-control-input(type='radio', name='type', value='teacher')
+            //-       label.custom-control-label(for='teacher') Teacher
+
+              //- input.form-radio(type='radio', name='type', value='teacher')
+              //- | Teacher
+            .mx-auto
+              p#error(style="color:rgb(199, 21, 133);")
+            .container-login100-form-btn.p-t-25
+              input.login100-form-btn(type="Submit" value="Login")
+            .forgot-password
+              br
+              a(href='/forgotPassword') Forgot password?
+              br
+              a(href='/about') About ELAB
+      //- .push1
+      //- .push
+    //- footer.bg-dark(class="FOOTER")
+    //-     div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+    include footer
+    // ===============================================================================================
+    script(src='/vendor/jquery/jquery-3.2.1.min.js')
+    script(src='/js/popper.min.js')
+    script(src='/vendor/bootstrap/js/bootstrap.min.js')
+    script(src="/fontawesome/all.min.js")
+    script(src="/js/toastr.min.js")
+    // ===============================================================================================
+    //-script(src='/vendor/select2/select2.min.js')
+    // ===============================================================================================
+    script(src='/js/main.js')
+    script.
+      function login(){
+        $.post('/',$('#login').serialize(),function(data,status){
+        window.location.replace(data);
+      }).fail((err)=>{
+        toastr.error(err.responseText);
+        $("#error").text(err.responseText);
+      });
+      return false;
+      }
+      

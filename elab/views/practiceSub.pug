@@ -1,0 +1,107 @@
+-if(session.usn) 
+    include navbar 
+-else 
+    include teacher/nav
+
+head
+    title Submissions
+    link(rel="stylesheet", href="/css/dataTables.bootstrap4.min.css")
+    script(src="/js/jquery.dataTables.min.js")
+    script(src="/js/dataTables.bootstrap4.min.js")
+    link(href="https://fonts.googleapis.com/css?family=Source+Code+Pro&display=swap" rel="stylesheet")
+    link(rel="stylesheet", href="/css/lb_main.css")
+    script(src="/js/he.js")
+    style.
+        th{
+            font-family: OpenSans-Regular;
+            font-size: 16px;
+            color: #fff;
+            line-height: 1.2;
+            font-weight: unset;
+        }
+
+body
+    .WRAPPER
+        br
+        nav(aria-label='breadcrumb' style="color:black;width:50%;margin-left:40px")
+            ol.breadcrumb(style="padding-left:20px")
+                li.breadcrumb-item
+                    a(href='/practice') Practice
+                li.breadcrumb-item
+                    a(href='/practice/'+question.qid) #{question.name}
+                li.breadcrumb-item.active(aria-current='page') Submissions
+
+        h1.text-center.m-3.lb_heading Submissions
+
+        .container-fluid
+            .row
+                .col-lg-12
+                    .lb
+                        table#submission.table.table-hover
+                            thead
+                                tr
+                                    th.column1.text-center(style="padding-top:5px!important") No.
+                                    th.text-center USN
+                                    th.text-center Name
+                                    th.text-center Source Code
+                                    th.text-center Time
+                                    th.text-center Points
+                                    th.text-center Status
+                            tbody
+        .push1
+        .push
+    //- footer.bg-dark(class="FOOTER")
+    //-     div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+    include footer
+    .modal.fade#source(tabindex ="-1" role="dialog" )
+        .modal-dialog.modal-lg
+            .modal-content
+                .modal-header
+                    h4.modal-title Code 
+                .modal-body
+                    #sourceBody(style="font-family: 'Source Code Pro' ;white-space: pre-wrap;")
+                .modal-footer
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+
+    script.
+        $.get('/practice/#{question.qid}/submissions/list',function(data,status){
+                    const submissions = $('#submission').DataTable( {
+                        "data":data,
+                        "columns": [
+                            { "data": null },
+                            { "data": "usn" },
+                            { "data": "name" },
+                            { "data": "code" },
+                            { "data": {_:"time.display",sort:"time.timestamp"} },
+                            { "data": "points" },
+                            { "data": "status" },
+                        ],
+                        "order": [[ 4, 'asc' ]],
+                        "columnDefs": [ {"searchable": false,"orderable": false,"targets": 0},
+                                        { "width": "1%", "targets": 0 },
+                                        {"width":"20%", "targets": 3},
+                                        {"searchable": false,"orderable": false,"targets": 3},
+                                        {"searchable": false,"targets": 4},
+                                        {"searchable": false,"targets": 5},
+                                        {"searchable": false,"targets": 6},
+                                        {"className": "text-center", "targets": "_all"} ]
+                    } );
+                    submissions.on( 'order.dt search.dt', function () {
+                        submissions.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+                            cell.innerHTML = i+1;
+                        } );
+                    } ).draw();
+                }).fail((err)=>{
+                    toastr.error(err.responseText);
+                });
+
+        
+        $("#source").on('show.bs.modal',function (e){
+            $("#sourceBody").empty();
+            $.get('/practice/source/#{question.qid}/'+$(e.relatedTarget).data('usn'),function(data,status){
+                $("#sourceBody").html(he.escape(data));
+            }).fail((err)=>{
+                toastr.error(err.responseText);
+            });
+
+        });

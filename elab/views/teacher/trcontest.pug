@@ -1,0 +1,257 @@
+extends nav
+
+block append head
+  - active.contest="active"
+  - navClass = "bg-fade trans";
+  - navStyle = "";
+  title Contest
+  link(rel="stylesheet", href="/assets/css/n.css")
+  link(rel="stylesheet", href="/fontawesome/all.min.css")
+  script(src="/fontawesome/all.min.js")
+  link(rel='stylesheet' type='text/css' href='/card.css')
+  script(src="/js/typewriter.js ")
+  script.
+    $(document).ready(function () {
+      const list=window.location.href.split("=");
+      if(list.includes("past") || list.includes("past&page")){
+        $('.navbar1 a.active').removeClass('active');
+
+        $("#past").addClass('active');
+        //- $parent.addClass('active');
+        //e.preventDefault();
+      }
+    });
+  style.
+    .admin{
+    float: right;
+    margin-right: 20px;
+    }
+    body{
+    background-color:#f4f5fa;
+    }
+
+    .card{
+    border-radius:5px;
+    border:none;
+    webkit-box-shadow: 0 1px 15px 1px rgba(62,57,107,.07);
+    box-shadow: 0 1px 15px 1px rgba(62,57,107,.07);
+    /*border-left: 4px #17A2B8 solid;*/
+    margin-left:10px;
+    }
+
+    /*body {
+    background-color:#ce3635;
+    text-align: center;
+    color:#fff;
+    padding-top:10em;
+    }
+
+    * { color:#fff; text-decoration: none;}*/
+
+    .trans{
+      position:absolute;
+      right:60px;
+      left:60px;
+      padding-top:30px;
+      background:transparent;
+      background-color:transparent!important;
+      }
+
+  
+    .container {
+      position: relative;
+      text-align: center;
+      color: white;
+    }
+
+    .centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+    .navbar1 {
+      margin-left:30px;
+    }
+
+    .nav-link1 {
+      font-weight: bold;
+      font-size: 18px;
+      text-transform: uppercase;
+      text-decoration: none;
+      /*color: #031D44;*/
+      color:#37474F;
+      padding: 20px 0px;
+      padding-bottom: 15px;
+      margin: 0px 20px;
+      display: inline-block;
+      position: relative;
+      opacity: 0.75;
+      letter-spacing: 0.3px;
+    }
+
+    .nav-link1:hover {
+      opacity: 1;
+      text-decoration:none;
+      color: black;
+    }
+
+    .nav-link1::before {
+      transition: 300ms;
+      height: 3px;
+      content: "";
+      position: absolute;
+      background-color: #FF4F87;
+    }
+
+    .nav-link-ltr1::before {
+      width: 0%;
+      bottom: 10px;
+    }
+
+    .nav-link-ltr1:hover::before {
+      width: 100%;
+    }
+
+    .nav-link-ltr1.active::before {
+      transition:none;
+      width: 100%;
+    }
+
+    .card {
+      width: 90%;
+      box-shadow: 0 0.5px 2px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      text-align: left;
+      left: 20px;
+      padding: 10px;
+      margin: 20px;
+      position: relative;
+      
+      }
+      .editor-right{
+        color:#263238;
+      }
+      .editor-right:hover{
+        color:#1E88E5;
+        cursor:pointer;
+        text-decoration:none;
+      }
+      /*.navbar1 .nav-link1:active a {
+        transition:none;
+      }
+      .active{
+        border-bottom:3px solid black;
+        color:black;
+      }*/
+      .page-item.active .page-link {
+        z-index: 1;
+        color: #fff;
+        background-color: #FF4F87;
+        border-color: #FF4F87;
+      }
+      .nav-link1.active{
+      color:black;
+      }
+    
+
+//- .container-fluid(style="width:100%;height:90%")
+//-   .row()
+//-     .col-lg-12(style="padding:0px")
+//-       img(src="/images/codew1.jpg"  style="width:100%;height:300px")
+//-       .centered
+//-         h1.text-center(style="font-weight:bold;font-size:50px;color:#8c8c8c")
+//-           p.typewrite(href='' data-period='2000' data-type='[ "CONTEST" ]' style="color:white")
+//-             span.wrap
+
+
+//- .jumbotron.bg-light.shadow.d-lg-flex.justify-content-lg-center.align-items-lg-center(style="background-color:#003366!important;box-shadow: 0 .5rem 9rem rgba(13,13,13,.15)!important;border-radius:0px!important;margin-bottom:0rem;")
+//-   div.text-center(style="width:25%")
+//-     //- h1.text-center(style="font-weight:bold;font-size:50px;color:#8c8c8c") CONTEST
+//-     //- h1.text-center(style="font-weight:bold;font-size:50px;color:#8c8c8c")
+//-     //-   p.typewrite(href='' data-period='2000' data-type='[ "CONTEST"]' style="color:white")
+//-     //-     span.wrap
+
+//-     //- hr(style="border-color:black")
+  
+block content
+  //-     //- hr(style="border-color:black")
+  .WRAPPER
+    section.module.parallax.parallax-1(data-type='background' data-speed='10')
+      .parallax-container
+        h2.typewrite(href='' data-period='2000' data-type='[ "CONTEST" ]' style="font-family: 'ABeeZee';letter-spacing:3px;font-weight:bold")
+          span.wrap
+    
+    .row.w-100
+      .col-lg-8
+        .navbar1
+          a.nav-link1.nav-link-ltr1.active(href='/contest') Contest
+          a.nav-link1.nav-link-ltr1(href='?l=past')#past Past
+      .col-lg-4
+        //- div.mt-3
+        a.btn.btn-success.mt-3.mr-5.font-weight-bold(style="border-radius:20px;" href='/contest/create') 
+          i.fad.fa-plus-square(style="")
+          | &nbsp; 
+          label.mb-0(style="") Create Contest
+        a.btn.btn-success.mt-3.font-weight-bold(style="border-radius:20px;" href='/contest/manage') 
+          i.fad.fa-cogs(style="")
+          | &nbsp; 
+          label.mb-0(style="") Manage Contest
+        //- a.editor-right.ml-4(href='/contest/manage') 
+        //-   i.fad.fa-cogs(style="font-size:20px")
+        //-   | &nbsp; 
+        //-   label.editor-right(style="font-size:22px") Manage Contest
+
+    
+    - const month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+    -function nth(n){return n+([,'st','nd','rd'][n%100>>3^1&&n%10]||'th')}
+    .row.flex-container(style="width:100%")
+      each i in contest
+        .ft-contest 
+          .ft-contest__thumb
+            //-span(id="close-modal")
+                i.ion.ion-md-close
+            //-h3 Today's Featured contest
+            img(src=i.image, alt=i.name)
+          .ft-contest__content
+            header.content__header
+              .row-wrapper
+                  h2(class="contest-title") #{ i.name}
+                  .user-rating
+              ul.contest-details
+                  li.contest-details-item
+                      i.ion.ion-ios-clock-outline
+                      span.value=Math.round(Math.abs(i.timings.ends - i.timings.starts) / 36e5)
+                      span.title Hours
+                  li.contest-details-item
+                      i.ion.ion-ios-book-outline
+                      span.value #{i.questions.length}
+                      span.title Questions
+                  li.contest-details-item
+                      i.ion.ion-ios-person-outline
+                      span.value=nth(i.timings.starts.getDate())
+                      span.title=month[i.timings.starts.getMonth()]
+            p.description=i.description
+            footer.content__footer
+                a(href="/contest/"+i.url) View Contest
+  
+    -if(msg)
+      p.text-center=msg
+
+    -if(count!=0)
+      ul.pagination.justify-content-center
+        li.page-item(class=(page==1?'disabled':''))
+            a.page-link(href='?l='+type+"&page="+(page-1)) Previous
+        -for(let i=1;i<=Math.ceil(count/12);i++)
+          li.page-item(class=(page==i?'active':''))
+            a.page-link(href='?l='+type+"&page="+i)=i
+        li.page-item(class=(page==Math.ceil(count/12)?'disabled':''))
+            a.page-link(href='?l='+type+"&page="+(page+1) ) Next
+    
+    .push1
+    .push1
+    .push
+    .push
+  include ../footer
+  //- footer.bg-dark(class="FOOTER")
+  //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+  

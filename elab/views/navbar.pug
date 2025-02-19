@@ -1,0 +1,81 @@
+
+html(lang="en-US")
+	head
+		meta(charset='utf-8')
+		meta(name='viewport', content='width=1024')
+		link(rel='stylesheet', href='/assets/bootstrap/css/bootstrap.min.css')
+		link(rel="shortcut icon", href="/images/icons/code.png", type="image/x-icon")
+		link(rel='stylesheet', href='/assets/css/Navigation-Clean.css')
+		link(rel='stylesheet', href='/assets/css/styles.css')
+		link(rel='stylesheet' href='/adminLTE/plugins/fontawesome-free/css/all.min.css')
+		script(src="/assets/js/jquery.min.js")
+		script(src="/assets/bootstrap/js/popper.min.js")
+		script(src="/assets/bootstrap/js/bootstrap.min.js")
+		script(src="/js/toastr.min.js")
+		link(rel="stylesheet", href="/css/toastr.min.css")
+		link(rel="stylesheet", href="/css/body-scrollbar.css")
+		link(href="https://fonts.googleapis.com/css?family=Palanquin+Dark:500&display=swap" rel="stylesheet")
+		link(href="https://fonts.googleapis.com/css?family=ABeeZee&display=swap" rel="stylesheet")
+		block head
+			- let active = {practice:"",contest:"",assignment:"",profile:"",lab:""} 
+			- let navClass = "bg-dark";
+			- let navStyle = "background-color:#1aa3ff!important";
+		style.
+			.lb_heading{
+				font-family: 'Palanquin Dark';
+				color:#666666!important;
+				cursor:default;
+				/*padding-left:10px;*/
+				letter-spacing:0.8px
+			}
+			/* For Footer*/
+
+			html, body {
+				height: 100%;
+				margin: 0;
+			}
+			.WRAPPER {
+				min-height: 100%;
+
+				/* Equal to height of footer */
+				/* But also accounting for potential margin-bottom of last child */
+				margin-bottom: -50px;
+			}
+			.FOOTER,
+			.push {
+				height: 80px!important;
+			}
+			.push1{
+				height: 50px !important;
+			}
+
+			/* End for Footer*/
+	body
+		div
+			nav.navbar.navbar-dark.navbar-expand-md.navigation-clean(style=navStyle,class=navClass)
+				.container
+					a.navbar-brand(href='/dashboard' ) ELAB
+					button.navbar-toggler(data-toggle='collapse', data-target='#navcol-1')
+						span.sr-only Toggle navigation
+						span.navbar-toggler-icon
+					#navcol-1.collapse.navbar-collapse
+						ul.nav.navbar-nav.ml-auto
+							li.nav-item(role='presentation')
+								a.nav-link(href='/practice' class=active.practice) PRACTICE
+							li.nav-item(role='presentation')
+								a.nav-link(href='/contest' class=active.contest) CONTEST
+							li.nav-item(role='presentation')
+								a.nav-link(href='/lab' class=active.lab) LAB
+							li.nav-item(role='presentation')
+								a.nav-link(href='/assignment' class=active.assignment) ASSIGNMENT
+							li.dropdown.nav-item
+								a.dropdown-toggle.nav-link(data-toggle='dropdown', aria-expanded='false', href='#', class=active.profile) #{session.fname.toUpperCase()}
+									
+								.dropdown-menu(role='menu')
+									a.dropdown-item(role='presentation', href='/profile') PROFILE
+									a.dropdown-item(role='presentation', href='/logout') LOG OUT
+									.dropdown-divider(role='presentation')
+					.clearfix
+		block content
+
+		

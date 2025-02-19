@@ -1,0 +1,280 @@
+if(session.staff_id)
+    include teacher/nav
+else
+    include navbar
+
+head
+  title=contest.name
+  link(rel='stylesheet' href='/fontawesome/all.min.css')
+  script(src="/fontawesome/all.min.js")
+  link(href="https://fonts.googleapis.com/css?family=Open+Sans:700&display=swap" rel="stylesheet")
+  link(href='https://fonts.googleapis.com/css?family=Pompiere|Vast+Shadow&display=swap' rel='stylesheet')
+  style.
+    .hovering,.hovering1,.hovering2,.hovering3{
+    color:white;
+    border-color:white;
+    }
+    .hovering:hover{
+    color:#8bc34a;
+    background-color:white;
+    border-color:#8bc34a;
+    }
+    .hovering1:hover{
+    color:#ff4d4d;
+    background-color:white;
+    border-color:#ec407a;
+    }
+    .hovering2:hover{
+    color:#fbc02d;
+    background-color:white;
+    border-color:#fbc02d;
+    }
+    .hovering3:hover{
+    color:#00bcd4;
+    background-color:white;
+    border-color:#00bcd4;
+    }
+    body * {
+    font-family: 'Nunito', sans-serif;
+    box-sizing: border-box;
+    }
+    #countdown-wrap {
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    font-family: arial;
+    max-width: 650px;
+    margin: 20px auto 300px;
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16), 0px 3px 6px rgba(0, 0, 0, 0.23);
+    border-radius: 1%;
+    background-color: white;
+    }
+    #goal {
+    font-size: 20px;
+    text-align: center;
+    color: rgb(22, 22, 22);
+    }
+    @media only screen and (max-width: 640px) {
+    #goal {
+    text-align: center;
+    }
+    }
+    #glass {
+    width: 100%;
+    height: 20px;
+    background: #f5f1f1;
+    border-radius: 10px;
+    float: left;
+    overflow: hidden;
+    }
+    #progress {
+    float: left;
+    width: 16%;
+    height: 20px;
+    background: #FF5D50;
+    z-index: 333;
+    }
+    .goal-stat {
+    width: 70%;
+    padding: 10px;
+    float: auto;
+    margin: 0;
+    color: rgb(8, 8, 8);
+    }
+    @media only screen and (max-width: 640px) {
+    .goal-stat {
+    width: 50%;
+    text-align: center; 
+    }
+    }
+    .goal-number,
+    .goal-label {
+    display: inline-block;
+    }
+    .goal-number {
+    font-weight: bold;
+    }
+    .questions{
+      font-family: 'Palanquin Dark';color:white;font-size:34px;letter-spacing:0.4px;
+    }
+    .Easy{
+      background-color: #8bc34a; width: 700px;  margin-left: 25px;
+    }
+    .Medium{
+      background-color: #fbc02d; width: 700px; margin-left: 25px;
+    }
+    .Hard{
+      background-color: #ff4d4d;  width: 700px; margin-left: 25px;
+    }
+    .solved{
+      opacity:70%;
+    }
+
+    .solved:hover{
+      opacity:100%;
+    }
+
+
+  -if(contest.timings.starts < new Date() && contest.timings.ends > new Date() )
+    script.
+      CountDownTimer('#{contest.timings.ends.toString()}', 'countdown');
+      const starts = new Date('#{contest.timings.starts.toString()}');
+      function CountDownTimer(dt, id)
+      {
+      var end = new Date(dt);
+      var _second = 1000;
+      var _minute = _second * 60;
+      var _hour = _minute * 60;
+      var _day = _hour * 24;
+      var timer;
+      function showRemaining() {
+      var now = new Date();
+      var distance = end - now;
+      if (distance < 0) {
+      clearInterval(timer);
+      document.getElementById(id).innerHTML = '0';
+      window.location.reload();
+      return;
+      }
+      var days = Math.floor(distance / _day);
+      var hours = Math.floor((distance % _day) / _hour);
+      var minutes = Math.floor((distance % _hour) / _minute);
+      var seconds = Math.floor((distance % _minute) / _second);
+      document.getElementById(id).innerHTML = (days>0?`${days}d `:'')+ hours + "h "
+      + minutes + "m " + seconds + "s ";
+
+      const overall = end-starts;
+      const elapsed = distance;
+      const width = (elapsed/overall) * 100 + "%";
+      $("#progress").css('width',width);
+      }
+      timer = setInterval(showRemaining, 1000);
+      }
+body
+  -solved_questions = solved || []
+  .WRAPPER
+    .row(style="width:100%")
+      .col-lg-7
+        div(style="padding:25px;padding-bottom:0px")
+          nav(aria-label='breadcrumb' style="color:black;")
+            ol.breadcrumb(style="padding-left:20px")
+              li.breadcrumb-item
+                a(href='/contest') Contest
+              li.breadcrumb-item
+                a(href='/contest/'+contest.url)=contest.name
+    .row(style="width:100%")
+      .col-lg-7.pl-5.pr-4
+        h1(style="font-family: 'Palanquin Dark';color:#666666;letter-spacing:0.8px;font-size:43px")=contest.name
+        hr(style='border: 1px solid red;')
+    .row(style="width:100%")
+      .col-lg-7
+        each i,j in questions
+          br
+          
+          .shadow.p-3.rounded.w-100(class=i.difficulty,class=(solved_questions.includes(i.qid)?"solved":""))
+            h2.questions #{i.name.substr(0,40)+(i.name.length>40?"...":"")} 
+            .row
+              .col-lg-10.col-md-10
+                p(style="font-family: 'Pompiere', cursive;color:white;font-size:24px;") #{i.description.substr(0,60)+(i.description.length>60?"...":"")}
+            .row
+              .col-lg-3.col-md-3(style='color:white')
+                label(style="letter-spacing:0.5px;font-weight:bold" for='difficulty') Difficulty: 
+                label(style="letter-spacing:0.5px;margin-left:2px;") #{i.difficulty}
+              .col-lg-3.col-md-3(style='color:white')
+                label(style="letter-spacing:0.5px;font-weight:bold" for='points') Points: 
+                label(style="letter-spacing:0.5px;margin-left:2px;") #{totalPoints[j]}
+              .col-lg-4
+              .col-lg-2.col-md-2
+                a.btn.btn-outline-light.hovering(style='font-weight:bold;border-radius:20px;' href="/contest/"+contest.url+"/"+i.qid) Solve
+
+        br  
+
+      .col-lg-5.col-md-2(style='margin-top:23px;align-items: initial;')
+        .box
+          #countdown-wrap(style='width: 60%;margin:auto;  margin-bottom: 25px;')
+            -if(contest.timings.starts > new Date())
+              .text-center
+                h4 Contest starts on
+                br
+                p=moment(contest.timings.starts).format('MMMM Do YYYY, hh:mm a')
+            -else if(contest.timings.ends > new Date())
+              #goal
+                i.fal.fa-hourglass-half.fa-lg.fa-spin
+                | &nbsp; 
+                label(style="font-size:22px") Time remaining
+              br
+              #glass
+                #progress
+              .goal-stat(style="margin:auto;text-align:center;")
+                span.goal-number
+                  br
+                  #countdown(style="font-size:19px;") &nbsp;
+                  //- span.goal-label Days to End
+            -else
+              div.text-center
+                i.fad.fa-lock-alt.fa-2x.text-danger(style="--fa-secondary-color: black;--fa-secondary-opacity: 1.0")
+              br
+              p.text-center(style="font-weight:bold") 
+                | Contest has ended.
+            hr
+            div.text-center
+              i.fal.fa-user-edit.fa-2x
+            br
+            h5.text-center Created by: #{contest.createdByName}
+          #countdown-wrap(style='width: 60%;margin:auto;  margin-bottom: 10px;')
+            .row
+              .col.text-left
+                a.btn(href='#' style='font-size:20px;' data-toggle="modal" data-target="#myModal")
+                  i.fab.fa-readme
+                  label(style='cursor: pointer;') &nbsp; Rules
+            .row
+              .col.text-left
+                a.btn(href="/contest/"+contest.url+"/leaderboard" style='font-size:20px;')
+                  i.fad.fa-poll-people
+                  label(style='cursor: pointer;') &nbsp; Leaderboard
+            -if(session.staff_id == contest.createdBy || (session.staff_id && contest.timings.ends < new Date()) || session.isAdmin)
+              .row
+                .col.text-left
+                  a.btn(href='/contest/'+contest.url+'/submissions' style='font-size:20px;')
+                    i.fas.fa-chalkboard-teacher
+                    label(style='cursor: pointer;') &nbsp; View Submissions
+              .row
+                | &nbsp;
+                .col.text-left
+                  a.btn(href='/contest/'+contest.url+'/report' style='font-size:20px;')
+                    i.fad.fa-file-chart-line
+                    label(style='cursor: pointer;') &nbsp; Contest Report
+              .row
+                | &nbsp;
+                .col.text-left
+                  a.btn(href='/contest/'+contest.url+'/studentReport' style='font-size:20px;')
+                    i.fad.fa-file-chart-line
+                    label(style='cursor: pointer;') &nbsp; Student Report
+            -if(session.staff_id == contest.createdBy || session.isAdmin)
+              .row
+                .col.text-left
+                  a.btn(href='/contest/manage/'+contest.url style='font-size:20px;')
+                    i.fad.fa-cog
+                    label(style='cursor: pointer;') &nbsp; Manage Contest
+            -if(session.usn && contest.timings.ends < new Date())
+              .row
+                .col.text-left
+                  a.btn(href='/contest/'+contest.url+'/submissions' style='font-size:20px;' target="_blank")
+                    i.fas.fa-chalkboard-teacher
+                    label(style='cursor: pointer;') &nbsp; View all Submissions
+      br
+      #myModal.modal.fade
+        .modal-dialog(style="width:50%;max-width:70%")
+            .modal-content
+              .modal-header
+                h4.modal-title Rules
+                button.close(type='button' data-dismiss='modal') &times;
+              .modal-body
+                div(style="white-space:pre-wrap") #{contest.rules}
+              .modal-footer
+                  button.btn.btn-danger(type='button' data-dismiss='modal') Close
+    .push1
+    .push
+  //- footer.bg-dark(class="FOOTER")
+  //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+  include footer

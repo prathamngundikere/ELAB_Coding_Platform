@@ -1,0 +1,84 @@
+if(session.staff_id)
+    include teacher/nav
+else
+    include navbar
+
+head
+    title Assignment Leaderboard
+    link(rel='stylesheet' type='text/css' href='/css/lb_util.css')
+    link(rel='stylesheet' type='text/css' href='/css/lb_main.css')
+    link(rel="stylesheet", href="/fontawesome/all.min.css")
+    script(src="/fontawesome/all.min.js")
+
+-function two(x) {return ((x>9)?"":"0")+x}
+-
+  function convertMS( milliseconds ) {
+    var day, hour, minute, seconds;
+    seconds = Math.floor(milliseconds / 1000);
+    minute = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    hour = Math.floor(minute / 60);
+    minute = minute % 60;
+    day = Math.floor(hour / 24);
+    hour = hour % 24;
+    var time = two(day)+":"+two(hour)+":"+two(minute)+":"+two(seconds);
+    return time;
+  }
+body
+  .WRAPPER
+    div(style="margin-left:75px;margin-top:25px")
+      nav(aria-label='breadcrumb' style="color:black;width:56.5%;")
+          ol.mb-0.breadcrumb(style="padding-left:20px;background-color:white")
+            li.breadcrumb-item
+              a(href='/assignment') Assignment
+            -if(session.staff_id)
+              li.breadcrumb-item
+                a(href='/assignment?a='+assignment.id) #{assignment.sem} Sem
+            li.breadcrumb-item.active(aria-current='page') Leaderboard
+    h1.text-center.lb_heading Leaderboard
+      .limiter
+        .container-table100
+          .wrap-table100
+            .table100
+              .lb
+                table
+                  thead
+                    tr.table100-head
+                      th.column1
+                        i.fal.fa-flag-checkered 
+                        | &nbsp; RANK
+                      th.column2 
+                        i.fal.fa-id-card
+                        | &nbsp; USN/ID
+                      th.column3 
+                        i.fal.fa-user 
+                        | &nbsp; Name
+                      th.column4
+                        i.fal.fa-bullseye-arrow
+                        | &nbsp; POINTS
+                      th.column5
+                        i.fal.fa-clock
+                        | &nbsp; TIME (DD:HH:MM:SS)
+                      
+                  tbody
+                    each i,j in assignment.leaderboard
+                      tr
+                        td.column1
+                          if(j+1 == 1)
+                            i.fad.fa-trophy-alt.fa-2x(style="color:#FFDB19")
+                          else if(j+1 == 2)
+                            i.fad.fa-trophy-alt.fa-2x(style="color:#c6c6c6")
+                          else if(j+1 == 3)
+                            i.fad.fa-trophy-alt.fa-2x(style="color:#E67300")
+                          else
+                            div(style="padding-left:12px;font-weight:bold") #{j+1}
+                        td.column2 #{i.usn}
+                        td.column3 
+                          a(href="/viewProfile/"+i.usn+"") #{i.name} 
+                        td.column4 #{i.points}
+                        td.column5 #{convertMS(i.timestamp)}
+    .push1
+    .push
+  //- footer.bg-dark(class="FOOTER")
+  //-   div.text-center.text-light.font-weight-bold.pt-3 ELAB @ HKBKCE CSE DEPT. 2020
+  include footer

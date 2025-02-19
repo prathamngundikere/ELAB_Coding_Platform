@@ -1,0 +1,151 @@
+doctype html
+block code 
+  - let active={dashboard:"",add:"",manage:"",edit:"",assignment:"",addAssignment:"",editAssignment:"",reports:"",academic:""}
+  - let menu={manage:"",assignment:""}
+
+html(lang='en')
+  head
+    meta(charset='utf-8')
+    meta(name='viewport' content='width=1024')
+    meta(http-equiv='x-ua-compatible' content='ie=edge')
+    title ELAB Admin
+    script(src='/adminLTE/plugins/jquery/jquery.min.js')
+    script(src="/js/toastr.min.js")
+    script(src="/js/socket.io.js")
+    link(rel="stylesheet", href="/css/toastr.min.css")
+    link(rel='stylesheet' href='/adminLTE/plugins/fontawesome-free/css/all.min.css')
+    
+    link(rel='stylesheet' href='/adminLTE/dist/css/adminlte.min.css')
+    
+    link(href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700' rel='stylesheet')
+    block head
+  
+  body.hold-transition.sidebar-mini
+    .wrapper
+      //-  Navbar 
+      nav.main-header.navbar.navbar-expand.navbar-white.navbar-light
+        //-  Left navbar links 
+        ul.navbar-nav
+          li.nav-item
+            a.nav-link(data-widget='pushmenu' href='#')
+              i.fas.fa-bars
+          li.nav-item.d-none.d-sm-inline-block
+            a.nav-link(href='/') Teacher's Dashboard
+          li.nav-item.d-none.d-sm-inline-block
+            a.nav-link(href='/logout') Logout
+      //-  /.navbar 
+      //-  Main Sidebar Container 
+      aside.main-sidebar.sidebar-dark-primary.elevation-4
+        //-  Brand Logo 
+        a.brand-link(href='/admin')
+          //-img.brand-image.img-circle.elevation-3(src='/adminLTE/dist/img/AdminLTELogo.png' alt='AdminLTE Logo' style='opacity: .8')
+          span.brand-text.font-weight-light ELAB 
+        //-  Sidebar 
+        .sidebar
+          //-  Sidebar user panel (optional) 
+          .user-panel.mt-3.pb-3.mb-3.d-flex
+            .image
+              img.img-circle.elevation-2(src=session.profile_image alt='User Image')
+            .info
+              a.d-block(href='/profile') #{session.fname}
+          //-  Sidebar Menu 
+          nav.mt-2
+            ul.nav.nav-pills.nav-sidebar.flex-column(data-widget='treeview' role='menu' data-accordion='false')
+              //-
+                 Add icons to the links using the .nav-icon class
+                               with font-awesome or any other icon font library 
+              li.nav-item.has-treeview
+                a.nav-link(href='/admin' class=active.dashboard)
+                  i.nav-icon.fas.fa-tachometer-alt
+                  p Dashboard
+              li.nav-item.has-treeview(class=menu.manage)
+                a.nav-link(href='#' class=active.manage)
+                  i.nav-icon.fas.fa-user-cog
+                  p
+                    | Manage Accounts
+
+                    i.right.fas.fa-angle-left
+                ul.nav.nav-treeview
+                  li.nav-item
+                    a.nav-link(href='/admin/add' class=active.add)
+                      i.fas.fa-user-plus.nav-icon
+                      p Add Account
+                  li.nav-item
+                    a.nav-link(href='/admin/edit' class=active.edit)
+                      i.fas.fa-user-edit.nav-icon
+                      p Edit Account
+              li.nav-item.has-treeview(class=menu.assignment)
+                a.nav-link(href='#' class=active.assignment)
+                  i.nav-icon.fas.fa-book
+                  p
+                    | Assignments
+
+                    i.right.fas.fa-angle-left
+                ul.nav.nav-treeview
+                  li.nav-item
+                    a.nav-link(href='/admin/assignment/new' class=active.addAssignment)
+                      i.fas.fa-plus-square.nav-icon
+                      p Create New
+                  li.nav-item
+                    a.nav-link(href='/admin/assignment/edit' class=active.editAssignment)
+                      i.fas.fa-edit.nav-icon
+                      p Edit Assignment
+              li.nav-item
+                a.nav-link(href='/admin/reports' class=active.reports)
+                  i.fas.fa-chart-bar.nav-icon
+                  p Reports
+              li.nav-item
+                a.nav-link(href='/admin/academic' class=active.academic)
+                  i.nav-icon.fas.fa-calendar-plus
+                  p
+                    | New Academic Year
+          //- /.sidebar-menu 
+        //-  /.sidebar 
+      //-  Content Wrapper. Contains page content 
+      .content-wrapper
+        //-  Content Header (Page header) 
+        .content-header
+          .container-fluid
+            .row.mb-2
+              .col-sm-6
+                //-h1.m-0.text-dark Starter Page
+              //-  /.col 
+              //-.col-sm-6
+                ol.breadcrumb.float-sm-right
+                  li.breadcrumb-item
+                    a(href='#') Home
+                  li.breadcrumb-item.active Starter Page
+              //-  /.col 
+            //-  /.row 
+          //-  /.container-fluid 
+        //-  /.content-header 
+        //-  Main content 
+        .content
+          block content
+      aside.control-sidebar.control-sidebar-dark
+        //-  Control sidebar content goes here 
+        .p-3
+          h5 Title
+          p Sidebar content
+      //-  /.control-sidebar 
+      //-  Main Footer 
+      footer.main-footer
+        //-  To the right 
+        .float-right.d-none.d-sm-inline.
+          
+          
+        //-  Default to the left 
+        strong
+          | Copyright © 2014-2019 
+          a(href='https://adminlte.io') AdminLTE.io
+          | .
+        |  All rights reserved.
+
+    //-  ./wrapper 
+    //-  REQUIRED SCRIPTS 
+    
+    //-  Bootstrap 4 
+    script(src='/adminLTE/plugins/bootstrap/js/bootstrap.bundle.min.js')
+    //-  AdminLTE App 
+    script(src='/adminLTE/dist/js/adminlte.min.js')
+    
